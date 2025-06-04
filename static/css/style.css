@@ -9,6 +9,9 @@
     --info-color: #0dcaf0;
     --tree-bg: rgba(13, 110, 253, 0.05);
     --node-hover: rgba(13, 110, 253, 0.1);
+    --glow-color: rgba(13, 110, 253, 0.3);
+    --gradient-start: #667eea;
+    --gradient-end: #764ba2;
 }
 
 body {
@@ -18,37 +21,162 @@ body {
 
 /* Header styling */
 header {
-    background-color: var(--bs-dark);
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
     border-bottom: 1px solid var(--bs-border-color);
+    position: relative;
+}
+
+.header-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    opacity: 0.7;
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.pulse-icon {
+    animation: pulse 2s infinite;
+}
+
+.logo-animation {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.05); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
 }
 
 /* Card enhancements */
 .card {
     border: 1px solid var(--bs-border-color);
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-    transition: box-shadow 0.15s ease-in-out;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.05);
 }
 
-.card:hover {
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+.hover-lift {
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* Textarea styling */
-#textInput {
+.hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.25);
+}
+
+.bg-gradient {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+}
+
+.icon-glow {
+    filter: drop-shadow(0 0 5px var(--glow-color));
+    animation: iconGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes iconGlow {
+    from { filter: drop-shadow(0 0 5px var(--glow-color)); }
+    to { filter: drop-shadow(0 0 10px var(--glow-color)); }
+}
+
+/* Enhanced Input Styling */
+.input-wrapper {
+    position: relative;
+}
+
+.enhanced-input {
     resize: vertical;
     min-height: 200px;
     font-family: 'Courier New', monospace;
     font-size: 0.9rem;
+    border: 2px solid var(--bs-border-color);
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(5px);
 }
 
-#textInput:focus {
+.enhanced-input:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    box-shadow: 0 0 0 0.2rem var(--glow-color), 0 0 20px var(--glow-color);
+    background: rgba(255, 255, 255, 0.1);
 }
 
-/* Character counter */
-.form-text {
+.input-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 0.5rem;
+    opacity: 0;
+    background: linear-gradient(45deg, var(--primary-color), var(--info-color));
+    z-index: -1;
+    transition: opacity 0.3s ease;
+}
+
+.enhanced-input:focus + .input-glow {
+    opacity: 0.1;
+}
+
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.typing-indicator .dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    animation: typingDot 1.4s infinite ease-in-out;
+}
+
+.typing-indicator .dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-indicator .dot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typingDot {
+    0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+    40% { transform: scale(1); opacity: 1; }
+}
+
+/* Character counter and sample buttons */
+.char-counter {
     font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.sample-buttons {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--bs-border-color);
+}
+
+.sample-btn {
+    transition: all 0.3s ease;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+
+.sample-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Sentiment display */

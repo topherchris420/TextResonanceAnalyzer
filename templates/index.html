@@ -17,15 +17,25 @@
 <body>
     <div class="container-fluid">
         <!-- Header -->
-        <header class="py-3 mb-4 border-bottom">
-            <div class="container">
-                <h1 class="display-6 text-center">
-                    <i class="fas fa-project-diagram me-2"></i>
-                    NLP Symbolic Resonance Analyzer
-                </h1>
-                <p class="text-center text-muted">
-                    Analyze text sentiment and visualize symbolic patterns in real-time
-                </p>
+        <header class="py-4 mb-4 border-bottom position-relative overflow-hidden">
+            <div class="header-bg"></div>
+            <div class="container position-relative">
+                <div class="text-center mb-3">
+                    <div class="logo-animation">
+                        <i class="fas fa-project-diagram fa-2x text-primary mb-3 pulse-icon"></i>
+                    </div>
+                    <h1 class="display-5 fw-bold gradient-text mb-2">
+                        NLP Symbolic Resonance Analyzer
+                    </h1>
+                    <p class="lead text-muted mb-3">
+                        Analyze text sentiment and visualize symbolic patterns in real-time
+                    </p>
+                    <div class="attribution">
+                        <small class="text-muted">
+                            Created by <a href="https://vers3dynamics.com/" target="_blank" class="text-decoration-none fw-semibold text-primary">Vers3Dynamics</a>
+                        </small>
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -33,41 +43,67 @@
             <div class="row">
                 <!-- Input Panel -->
                 <div class="col-lg-4 mb-4">
-                    <div class="card h-100">
-                        <div class="card-header">
+                    <div class="card h-100 hover-lift">
+                        <div class="card-header bg-gradient">
                             <h5 class="card-title mb-0">
-                                <i class="fas fa-edit me-2"></i>Text Input
+                                <i class="fas fa-edit me-2 icon-glow"></i>Text Input
                             </h5>
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <label for="textInput" class="form-label">Enter your text:</label>
-                                <textarea 
-                                    id="textInput" 
-                                    class="form-control" 
-                                    rows="8" 
-                                    placeholder="Type or paste your text here to analyze its symbolic resonance patterns..."
-                                    maxlength="5000"
-                                ></textarea>
-                                <div class="form-text">
-                                    <span id="charCount">0</span>/5000 characters
+                                <label for="textInput" class="form-label fw-semibold">Enter your text:</label>
+                                <div class="input-wrapper">
+                                    <textarea 
+                                        id="textInput" 
+                                        class="form-control enhanced-input" 
+                                        rows="8" 
+                                        placeholder="✨ Type or paste your text here to unlock its symbolic resonance patterns..."
+                                        maxlength="5000"
+                                    ></textarea>
+                                    <div class="input-glow"></div>
+                                </div>
+                                <div class="form-text d-flex justify-content-between align-items-center">
+                                    <span class="char-counter">
+                                        <span id="charCount">0</span>/5000 characters
+                                    </span>
+                                    <div class="typing-indicator d-none">
+                                        <div class="dot"></div>
+                                        <div class="dot"></div>
+                                        <div class="dot"></div>
+                                    </div>
                                 </div>
                             </div>
                             
                             <!-- Analysis Status -->
-                            <div id="analysisStatus" class="d-none">
-                                <div class="d-flex align-items-center">
-                                    <div class="spinner-border spinner-border-sm me-2" role="status">
-                                        <span class="visually-hidden">Loading...</span>
+                            <div id="analysisStatus" class="analysis-status d-none">
+                                <div class="d-flex align-items-center justify-content-center p-3">
+                                    <div class="custom-spinner me-3">
+                                        <div class="spinner-ring"></div>
                                     </div>
-                                    <span>Analyzing text...</span>
+                                    <span class="fw-semibold">Analyzing symbolic patterns...</span>
                                 </div>
                             </div>
                             
                             <!-- Error Display -->
-                            <div id="errorDisplay" class="alert alert-danger d-none" role="alert">
+                            <div id="errorDisplay" class="alert alert-danger d-none animate-shake" role="alert">
                                 <i class="fas fa-exclamation-triangle me-2"></i>
                                 <span id="errorMessage"></span>
+                            </div>
+                            
+                            <!-- Quick Sample Buttons -->
+                            <div class="sample-buttons">
+                                <small class="text-muted d-block mb-2">Try a sample:</small>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-primary btn-sm sample-btn" data-sample="positive">
+                                        <i class="fas fa-smile me-2"></i>Positive Text
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm sample-btn" data-sample="neutral">
+                                        <i class="fas fa-meh me-2"></i>Neutral Text
+                                    </button>
+                                    <button class="btn btn-outline-warning btn-sm sample-btn" data-sample="negative">
+                                        <i class="fas fa-frown me-2"></i>Negative Text
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -78,16 +114,18 @@
                     <div class="row">
                         <!-- Sentiment Analysis -->
                         <div class="col-12 mb-4">
-                            <div class="card">
-                                <div class="card-header">
+                            <div class="card hover-lift result-card">
+                                <div class="card-header bg-gradient">
                                     <h5 class="card-title mb-0">
-                                        <i class="fas fa-heart me-2"></i>Sentiment Analysis
+                                        <i class="fas fa-heart me-2 icon-glow text-danger"></i>Sentiment Analysis
                                     </h5>
                                 </div>
                                 <div class="card-body">
-                                    <div id="sentimentResults" class="text-muted">
-                                        <i class="fas fa-info-circle me-2"></i>
-                                        Start typing to see sentiment analysis results...
+                                    <div id="sentimentResults" class="text-muted empty-state">
+                                        <div class="text-center py-3">
+                                            <i class="fas fa-brain fa-2x mb-2 opacity-50"></i>
+                                            <p class="mb-0">Start typing to see sentiment analysis results...</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -95,16 +133,18 @@
 
                         <!-- Text Statistics -->
                         <div class="col-12 mb-4">
-                            <div class="card">
-                                <div class="card-header">
+                            <div class="card hover-lift result-card">
+                                <div class="card-header bg-gradient">
                                     <h5 class="card-title mb-0">
-                                        <i class="fas fa-chart-bar me-2"></i>Text Statistics
+                                        <i class="fas fa-chart-bar me-2 icon-glow text-info"></i>Text Statistics
                                     </h5>
                                 </div>
                                 <div class="card-body">
-                                    <div id="textStats" class="text-muted">
-                                        <i class="fas fa-info-circle me-2"></i>
-                                        Text statistics will appear here...
+                                    <div id="textStats" class="text-muted empty-state">
+                                        <div class="text-center py-3">
+                                            <i class="fas fa-calculator fa-2x mb-2 opacity-50"></i>
+                                            <p class="mb-0">Text statistics will appear here...</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -116,29 +156,34 @@
             <!-- Tree Visualization -->
             <div class="row mt-4">
                 <div class="col-12">
-                    <div class="card">
-                        <div class="card-header d-flex justify-content-between align-items-center">
+                    <div class="card hover-lift tree-card">
+                        <div class="card-header bg-gradient d-flex justify-content-between align-items-center">
                             <h5 class="card-title mb-0">
-                                <i class="fas fa-sitemap me-2"></i>Symbolic Resonance Tree
+                                <i class="fas fa-sitemap me-2 icon-glow text-success"></i>Symbolic Resonance Tree
                             </h5>
                             <div class="btn-group" role="group" aria-label="Tree controls">
-                                <button type="button" class="btn btn-outline-secondary btn-sm" id="centerTree">
+                                <button type="button" class="btn btn-outline-primary btn-sm control-btn" id="centerTree">
                                     <i class="fas fa-crosshairs"></i> Center
                                 </button>
-                                <button type="button" class="btn btn-outline-secondary btn-sm" id="expandAll">
+                                <button type="button" class="btn btn-outline-success btn-sm control-btn" id="expandAll">
                                     <i class="fas fa-expand"></i> Expand
                                 </button>
-                                <button type="button" class="btn btn-outline-secondary btn-sm" id="collapseAll">
+                                <button type="button" class="btn btn-outline-warning btn-sm control-btn" id="collapseAll">
                                     <i class="fas fa-compress"></i> Collapse
                                 </button>
                             </div>
                         </div>
                         <div class="card-body p-0">
-                            <div id="treeVisualization" class="position-relative">
-                                <div id="emptyState" class="text-center py-5 text-muted">
-                                    <i class="fas fa-tree fa-3x mb-3 opacity-25"></i>
-                                    <h6>No Analysis Yet</h6>
-                                    <p>Enter some text to see the symbolic resonance tree visualization</p>
+                            <div id="treeVisualization" class="position-relative tree-container-enhanced">
+                                <div id="emptyState" class="text-center py-5 text-muted empty-tree-state">
+                                    <div class="empty-animation">
+                                        <i class="fas fa-tree fa-4x mb-3 opacity-25 floating-icon"></i>
+                                    </div>
+                                    <h5 class="fw-bold mb-2">Awaiting Analysis</h5>
+                                    <p class="lead mb-0">Enter some text to unlock the symbolic resonance tree visualization</p>
+                                    <div class="mt-3">
+                                        <small class="text-muted">Watch your words transform into interactive patterns</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
