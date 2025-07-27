@@ -12,20 +12,37 @@ class NLPAnalyzer {
         this.sentimentResults = document.getElementById('sentimentResults');
         this.textStats = document.getElementById('textStats');
         
+        // Enhanced debouncing with dual-mode analysis
         this.debounceTimer = null;
-        this.debounceDelay = 1000; // 1 second delay
+        this.quickAnalyzeTimer = null;
+        this.debounceDelay = 1000; // Full analysis delay
+        this.quickAnalyzeDelay = 300; // Quick stats delay
         this.currentRequest = null;
+        this.lastQuickAnalyzeText = '';
+        
+        // Performance tracking
+        this.performanceMetrics = {
+            analysisCount: 0,
+            cacheHits: 0,
+            avgResponseTime: 0
+        };
         
         this.treeViz = new TreeVisualization('treeVisualization');
         
         this.initializeEventListeners();
+        this.setupPerformanceMonitoring();
     }
     
     initializeEventListeners() {
-        // Text input with debouncing and typing indicator
+        // Enhanced text input with dual-mode analysis
         this.textInput.addEventListener('input', (e) => {
             this.updateCharCount();
             this.showTypingIndicator();
+            
+            // Quick analysis for immediate feedback
+            this.debouncedQuickAnalyze();
+            
+            // Full analysis with longer delay
             this.debouncedAnalyze();
         });
         
@@ -80,6 +97,131 @@ class NLPAnalyzer {
         } else {
             this.charCount.className = 'text-muted';
         }
+    }
+    
+    setupPerformanceMonitoring() {
+        // Track cache statistics periodically
+        setInterval(() => {
+            this.fetchCacheStats();
+        }, 30000); // Every 30 seconds
+    }
+    
+    async fetchCacheStats() {
+        try {
+            const response = await fetch('/api/cache-stats');
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success) {
+                    console.log('Cache Stats:', data.cache_stats);
+                    this.updatePerformanceDisplay(data.cache_stats);
+                }
+            }
+        } catch (error) {
+            console.log('Cache stats unavailable:', error.message);
+        }
+    }
+    
+    updatePerformanceDisplay(stats) {
+        // Update performance metrics in UI if needed
+        if (stats.cache_size > 0) {
+            console.log(`Cache: ${stats.cache_size}/${stats.max_cache_size} entries`);
+        }
+    }
+    
+    debouncedQuickAnalyze() {
+        // Clear existing timer
+        if (this.quickAnalyzeTimer) {
+            clearTimeout(this.quickAnalyzeTimer);
+        }
+        
+        const text = this.textInput.value.trim();
+        
+        // Skip if text hasn't changed much
+        if (text === this.lastQuickAnalyzeText) {
+            return;
+        }
+        
+        if (!text) {
+            this.clearQuickStats();
+            return;
+        }
+        
+        // Set new timer for quick analysis
+        this.quickAnalyzeTimer = setTimeout(() => {
+            this.performQuickAnalyze(text);
+        }, this.quickAnalyzeDelay);
+    }
+    
+    async performQuickAnalyze(text) {
+        this.lastQuickAnalyzeText = text;
+        
+        try {
+            const response = await fetch('/api/quick-analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: text })
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                this.updateQuickStats(data);
+            }
+        } catch (error) {
+            console.log('Quick analysis error:', error.message);
+        }
+    }
+    
+    updateQuickStats(data) {
+        // Update basic stats immediately for responsive feedback
+        const wordCountEl = document.querySelector('.stat-number[data-stat="words"]');
+        const sentenceCountEl = document.querySelector('.stat-number[data-stat="sentences"]');
+        
+        if (wordCountEl) {
+            this.animateCounter(wordCountEl, data.word_count || 0);
+        }
+        
+        if (sentenceCountEl) {
+            this.animateCounter(sentenceCountEl, data.sentence_count || 0);
+        }
+        
+        // Update sentiment preview if available
+        if (data.sentiment && data.sentiment.polarity !== undefined) {
+            this.updateSentimentPreview(data.sentiment);
+        }
+    }
+    
+    updateSentimentPreview(sentiment) {
+        const sentimentIcon = document.querySelector('.sentiment-icon-large i');
+        const sentimentLabel = document.querySelector('.sentiment-label');
+        
+        if (sentimentIcon && sentimentLabel) {
+            const polarity = sentiment.polarity;
+            
+            if (polarity > 0.1) {
+                sentimentIcon.className = 'fas fa-smile text-success';
+                sentimentLabel.textContent = 'Positive';
+                sentimentLabel.className = 'sentiment-label text-success';
+            } else if (polarity < -0.1) {
+                sentimentIcon.className = 'fas fa-frown text-danger';
+                sentimentLabel.textContent = 'Negative';
+                sentimentLabel.className = 'sentiment-label text-danger';
+            } else {
+                sentimentIcon.className = 'fas fa-meh text-warning';
+                sentimentLabel.textContent = 'Neutral';
+                sentimentLabel.className = 'sentiment-label text-warning';
+            }
+        }
+    }
+    
+    clearQuickStats() {
+        // Clear quick analysis results
+        const wordCountEl = document.querySelector('.stat-number[data-stat="words"]');
+        const sentenceCountEl = document.querySelector('.stat-number[data-stat="sentences"]');
+        
+        if (wordCountEl) wordCountEl.textContent = '0';
+        if (sentenceCountEl) sentenceCountEl.textContent = '0';
     }
     
     debouncedAnalyze() {
